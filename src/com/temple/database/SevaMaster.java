@@ -1,6 +1,7 @@
 package com.temple.database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -132,8 +133,10 @@ public class SevaMaster {
 	
 	public static void main(String args[]) {
 		SevaMaster sm = new SevaMaster();
-		//SevaBean sb = new SevaBean("Pooja", "Pooja details", 100 , 0);
-		//SevaBean sb = new SevaBean("Abhisheka Seva", "Abhisheka Seva", 50, 1, 2, "Rayara Anugraha", "Shyam");
+		///SevaBean sb = new SevaBean("Pooja", "Pooja details", 100 , 0);
+		
+		SevaBean sb = new SevaBean("Abhisheka Seva", "Abhisheka Seva", 50, 1, 2, "Rayara Anugraha",new Date(System.currentTimeMillis()), "Shyam");
+		sm.addNewSeva(sb);
 		//sb.setSevaId(1);
 		//sm.updateSeva(sb);
 		Vector<SevaBean> results= sm.getSevaMaster();

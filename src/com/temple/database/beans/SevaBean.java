@@ -26,7 +26,7 @@ public class SevaBean {
 	}
 	
 	public SevaBean(String sevaName, String sevaDetail, int sevaAmounnt, int isSplSeva,
-			int noOfPersns, String sevaPrasadamDetails, String userName) {
+			int noOfPersns, String sevaPrasadamDetails,Date date, String userName) {
 		this.sevaName = sevaName;
 		this.sevaDetails = sevaDetail;
 		this.sevaAmount = sevaAmounnt;
@@ -34,8 +34,8 @@ public class SevaBean {
 		
 		this.noOfPersonsAllowed = noOfPersns;
 		this.sevaPrasadametails = sevaPrasadamDetails;
-		long time = Calendar.getInstance().getTimeInMillis();
-		this.lastModdifieddate = new java.sql.Date(time) ;
+		//long time = Calendar.getInstance().getTimeInMillis();
+		this.lastModdifieddate = date ;
 		this.lastModifiedBy = userName;
 		this.modificationReason = "";
 		this.isSevaActive = 1;
