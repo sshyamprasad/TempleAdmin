@@ -6,6 +6,20 @@ import java.util.Calendar;
 
 public class SevaBean {
 	
+	
+	int sevaId;
+	String sevaName;
+	String sevaDetails;
+	int sevaAmount;
+	int isSplSeva;
+	int noOfPersonsAllowed;
+	String sevaPrasadametails;
+	java.sql.Date lastModdifieddate;
+	String lastModifiedBy;
+	String modificationReason;
+	int isSevaActive;
+	String suggestions;
+	
 	public SevaBean() {
 		
 	}
@@ -26,7 +40,7 @@ public class SevaBean {
 	}
 	
 	public SevaBean(String sevaName, String sevaDetail, int sevaAmounnt, int isSplSeva,
-			int noOfPersns, String sevaPrasadamDetails,Date date, String userName) {
+			int noOfPersns, String sevaPrasadamDetails,Date date, String userName, String suggestions) {
 		this.sevaName = sevaName;
 		this.sevaDetails = sevaDetail;
 		this.sevaAmount = sevaAmounnt;
@@ -39,6 +53,7 @@ public class SevaBean {
 		this.lastModifiedBy = userName;
 		this.modificationReason = "";
 		this.isSevaActive = 1;
+		this.suggestions = suggestions;
 	}
 	
 	public int getSevaId() {
@@ -107,16 +122,12 @@ public class SevaBean {
 	public void setIsSevaActive(int isSevaActive) {
 		this.isSevaActive = isSevaActive;
 	}
-	int sevaId;
-	String sevaName;
-	String sevaDetails;
-	int sevaAmount;
-	int isSplSeva;
-	int noOfPersonsAllowed;
-	String sevaPrasadametails;
-	java.sql.Date lastModdifieddate;
-	String lastModifiedBy;
-	String modificationReason;
-	int isSevaActive;
+	public String getSuggestions() {
+		return suggestions;
+	}
+
+	public void setSuggestions(String suggestions) {
+		this.suggestions = suggestions;
+	}
 
 }

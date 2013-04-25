@@ -23,10 +23,10 @@ public class SevaMaster {
 			sql = "INSERT INTO `temple`.`seva_master` " +
 			"(`Seva_ID`, `Seva_Name`, `Seva_Details`, `Seva_Amount`, `Is_Spl_Seva`, `Persons_Allowed`, " +
 			"`Seva_Prasadam_Details`, `Last_modified_date`, `Last_modifiedBy`, `Modified_reason`, " +
-			"`Is_seva_active`) VALUES(" + 
+			"`Is_seva_active`,`suggestions`) VALUES(" + 
 			seva.getSevaId() + ",'" + seva.getSevaName() + "','" + seva.getSevaDetails() + "',"  + seva.getSevaAmount() +"," + seva.getIsSevaActive() + "," +seva.getNoOfPersonsAllowed() +",'" +
 			seva.getSevaPrasadametails() + "','"  + seva.getLastModdifieddate() +"','" + seva.getLastModifiedBy() + "','" + seva.getModificationReason() + "'," +
-			seva.getIsSevaActive() + ")";
+			seva.getIsSevaActive() + ",'"  + seva.getSuggestions() +"')";
 			System.out.println("SQL: " + sql);
 			pstmt = connection.prepareStatement( sql );
 			pstmt.executeUpdate();
@@ -47,7 +47,7 @@ public class SevaMaster {
 			"`Is_Spl_Seva` = " + seva.getIsSevaActive() + ", `Persons_Allowed` = " + seva.getNoOfPersonsAllowed() + "," +
 			"`Seva_Prasadam_Details` = '" + seva.getSevaPrasadametails() + "', `Last_modified_date` = '"  + seva.getLastModdifieddate() +"'," + 
 			"`Last_modifiedBy` = '" + seva.getLastModifiedBy() + "',`Modified_reason` = '" + seva.getModificationReason() + "'," +
-			"`Is_seva_active` = " + seva.getIsSevaActive() + " WHERE `Seva_ID` = " + seva.getSevaId();
+			"`Is_seva_active` = " + seva.getIsSevaActive() + ", `suggestions` = '" + seva.getSuggestions() + "' WHERE `Seva_ID` = " + seva.getSevaId();
 			
 			System.out.println("SQL: " + sql);
 			pstmt = connection.prepareStatement( sql );
@@ -85,6 +85,7 @@ public class SevaMaster {
 				sevaDetails.setLastModifiedBy(result.getString("Last_modifiedBy"));
 				sevaDetails.setModificationReason(result.getString("Modified_Reason"));
 				sevaDetails.setIsSevaActive(result.getInt("Is_seva_active"));
+				sevaDetails.setSuggestions(result.getString("suggestions"));
 				System.out.println("Added seva bean to vector list: " + sevaDetails.toString());
 				sevaList.add(sevaDetails);
 				System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
@@ -120,6 +121,7 @@ public class SevaMaster {
 			sevaDetails.setLastModifiedBy(result.getString("Last_modifiedBy"));
 			sevaDetails.setModificationReason(result.getString("Modified_Reason"));
 			sevaDetails.setIsSevaActive(result.getInt("Is_seva_active"));
+			sevaDetails.setSuggestions(result.getString("suggestions"));
 			System.out.println("Added seva bean to vector list: " + sevaDetails.toString());
 			System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
 			connection.close();
@@ -135,10 +137,10 @@ public class SevaMaster {
 		SevaMaster sm = new SevaMaster();
 		///SevaBean sb = new SevaBean("Pooja", "Pooja details", 100 , 0);
 		
-		SevaBean sb = new SevaBean("Abhisheka Seva", "Abhisheka Seva", 50, 1, 2, "Rayara Anugraha",new Date(System.currentTimeMillis()), "Shyam");
-		sm.addNewSeva(sb);
-		//sb.setSevaId(1);
-		//sm.updateSeva(sb);
+		SevaBean sb = new SevaBean("Abhisheka Seva", "Abhisheka Seva", 50, 1, 2, "Rayara Anugraha",new Date(System.currentTimeMillis()), "Shyam","ALL SHOULD BE IN TRADITIONAL ATTIRE");
+		//sm.addNewSeva(sb);
+		sb.setSevaId(7);
+		sm.updateSeva(sb);
 		Vector<SevaBean> results= sm.getSevaMaster();
 		for(int result=0; result<results.size(); result++) {
 			SevaBean seva = results.get(result);

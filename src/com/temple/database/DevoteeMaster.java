@@ -8,7 +8,6 @@ import java.util.Vector;
 
 import com.temple.dao.DAO;
 import com.temple.database.beans.DevoteeBean;
-import com.temple.database.beans.SevaBean;
 
 public class DevoteeMaster {
 
@@ -100,32 +99,39 @@ public class DevoteeMaster {
 		}
 	}
 	
-	public SevaBean getSevaMaster(int sevaID) {
+	public DevoteeBean getDevoteeMaster(int devoteeID) {
 		try {
 			connection = DAO.getConnection();
-			sql = "SELECT * FROM SEVA_MASTER WHERE SEVA_ID = " + sevaID;
+			sql = "SELECT * FROM DEVOTEE WHERE Devotee_Id = " + devoteeID;
 			
 			System.out.println("SQL: " + sql);
 			pstmt = connection.prepareStatement( sql );
 			result = pstmt.executeQuery();
+//			Vector<DevoteeBean> sevaList = new Vector<DevoteeBean>();
 			//Convert from result set to Bean classes
-			SevaBean sevaDetails = null;
-			sevaDetails = new SevaBean();
-			sevaDetails.setSevaId(result.getInt("Seva_ID"));
-			sevaDetails.setSevaName(result.getString("Seva_Name"));
-			sevaDetails.setSevaDetails(result.getString("Seva_Details"));
-			sevaDetails.setSevaAmount(result.getInt("Seva_Amount"));
-			sevaDetails.setIsSplSeva(result.getInt("Is_Spl_Seva"));
-			sevaDetails.setNoOfPersonsAllowed(result.getInt("Persons_Allowed"));
-			sevaDetails.setSevaPrasadametails(result.getString("Seva_Prasadam_Details"));
-			sevaDetails.setLastModdifieddate(result.getDate("Last_modified_date"));
-			sevaDetails.setLastModifiedBy(result.getString("Last_modifiedBy"));
-			sevaDetails.setModificationReason(result.getString("Modified_Reason"));
-			sevaDetails.setIsSevaActive(result.getInt("Is_seva_active"));
-			System.out.println("Added seva bean to vector list: " + sevaDetails.toString());
-			System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
-			connection.close();
-			return sevaDetails;
+			DevoteeBean devoteeDetails = null;
+//			while(result.next()) {
+				devoteeDetails = new DevoteeBean();
+				devoteeDetails.setDevotee_Id(result.getInt("Devotee_Id"));
+				devoteeDetails.setDevotee_Surname(result.getString("Devotee_Surname"));
+				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Name"));
+				devoteeDetails.setDevotee_Address(result.getString("Devotee_Address"));
+				devoteeDetails.setDevotee_City(result.getString("Devotee_City"));
+				devoteeDetails.setDevotee_Phone(result.getString("Devotee_Phone"));
+				devoteeDetails.setDevotee_Email(result.getString("Devotee_Email"));
+				devoteeDetails.setDevotee_Gotra(result.getString("Devotee_Gotra"));
+				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Nakshatra"));
+				devoteeDetails.setDevotee_IsCommitteeMember(result.getString("Devotee_IsCommitteeMember"));
+				devoteeDetails.setDevotee_IsLifeMember(result.getString("Devotee_IsLifeMember"));
+				devoteeDetails.setDevotee_IsContributedInBuildingFund(result.getString("Devotee_IsContributedInBuildingFund"));
+				devoteeDetails.setDevotee_Alternate_ContactNumber(result.getString("Devotee_Alternate_ContactNumber"));
+				System.out.println("Added seva bean to vector list: " + devoteeDetails.toString());
+//				sevaList.add(devoteeDetails);
+				System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
+//			}
+				connection.close();
+				return devoteeDetails;
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

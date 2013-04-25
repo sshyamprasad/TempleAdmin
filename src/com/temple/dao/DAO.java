@@ -41,7 +41,7 @@ public class DAO {
 	}
 public static void main(String[] args) {
 	DAO dao = new DAO();
-	Connection con = dao.getConnection();
+	Connection con = DAO.getConnection();
 	if(null!=con) {
 		System.out.println("Connection success");
 	} else {
