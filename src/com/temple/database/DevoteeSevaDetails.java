@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import com.temple.dao.DAO;
 import com.temple.database.beans.DevoteeBean;
+import com.temple.database.beans.DevoteeSevaBean;
 import com.temple.database.beans.DevoteeSevaDetailsBean;
 
 public class DevoteeSevaDetails {
@@ -41,52 +42,184 @@ public class DevoteeSevaDetails {
 		}
 	}
 	
-//	public int updateDevoteeSeva(DevoteeBean devotee) {
+	public int updateDevoteeSeva(DevoteeSevaDetailsBean devotee) {
+		try {
+			connection = DAO.getConnection();
+			sql = "UPDATE `temple`.`devotee_seva_details` SET " + 
+			"Seva_Id = " + devotee.getSeva_Id() + ", Devotee_Id=" + devotee.getDevotee_Id() + ",Devotee_Seva_Date='" + devotee.getDevotee_Seva_Date() + "', Devotee_Seva_Onbehalf = '" + devotee.getDevotee_Seva_Onbehalf() + "',Devotee_Name = '" +devotee.getDevotee_Name() +"'," +
+			"Devotee_Gotra  = '" +	devotee.getDevotee_Gotra() + "', Devotee_Nakshatra='"  + devotee.getDevotee_Nakshatra() +"', Advance_Amount=" + devotee.getAdvance_Amount() + ", Amount_Due = " + devotee.getAmount_Due() + " WHERE Devotee_Seva_Details_Id = " + devotee.getDevotee_Seva_Details_Id(); 
+			
+			System.out.println("SQL: " + sql);
+			pstmt = connection.prepareStatement( sql );
+			pstmt.executeUpdate();
+			connection.close();
+			return 1;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	public Vector<DevoteeSevaBean> getDevoteeSevaDetails() {
+		try {
+			connection = DAO.getConnection();
+			sql = "SELECT * FROM temple.Devotee_Seva_Details, temple.devotee_master, temple.seva_master " +
+					"where temple.Devotee_Seva_Details.Seva_Id =  temple.seva_master.Seva_ID and" +
+					"temple.Devotee_Seva_Details.Devotee_Id = temple.devotee_master.devotee_id";
+			
+			System.out.println("SQL: " + sql);
+			pstmt = connection.prepareStatement( sql );
+			result = pstmt.executeQuery();
+			Vector<DevoteeSevaBean> sevaList = new Vector<DevoteeSevaBean>();
+			//Convert from result set to Bean classes
+			DevoteeSevaBean devoteeDetails = null;
+			while(result.next()) {
+				devoteeDetails = new DevoteeSevaBean();
+				
+//				Set Devotee Seva Details
+				devoteeDetails.setDevotee_Seva_Details_Id(result.getInt("Devotee_Seva_Details_Id"));
+				devoteeDetails.setSevaId(result.getInt("Seva_Id"));
+				devoteeDetails.setDevotee_Id(result.getInt("Devotee_Id"));
+				devoteeDetails.setDevotee_Seva_Date(result.getDate("Devotee_Seva_Date"));
+				devoteeDetails.setDevotee_Seva_Onbehalf(result.getString("Devotee_Seva_Onbehalf"));
+				devoteeDetails.setDevotee_Name(result.getString("Devotee_Name"));
+				devoteeDetails.setDevotee_Gotra(result.getString("Devotee_Gotra"));
+				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Nakshatra"));
+				devoteeDetails.setAdvance_Amount(result.getInt("Advance_Amount"));
+				devoteeDetails.setAmount_Due(result.getInt("Amount_Due"));
+//				Set Devotee Details
+				devoteeDetails.setDevotee_Id(result.getInt("Devotee_Id"));
+				devoteeDetails.setDevotee_Surname(result.getString("Devotee_Surname"));
+				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Name"));
+				devoteeDetails.setDevotee_Address(result.getString("Devotee_Address"));
+				devoteeDetails.setDevotee_City(result.getString("Devotee_City"));
+				devoteeDetails.setDevotee_Phone(result.getString("Devotee_Phone"));
+				devoteeDetails.setDevotee_Email(result.getString("Devotee_Email"));
+				devoteeDetails.setDevotee_Gotra(result.getString("Devotee_Gotra"));
+				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Nakshatra"));
+				devoteeDetails.setDevotee_IsCommitteeMember(result.getString("Devotee_IsCommitteeMember"));
+				devoteeDetails.setDevotee_IsLifeMember(result.getString("Devotee_IsLifeMember"));
+				devoteeDetails.setDevotee_IsContributedInBuildingFund(result.getString("Devotee_IsContributedInBuildingFund"));
+				devoteeDetails.setDevotee_Alternate_ContactNumber(result.getString("Devotee_Alternate_ContactNumber"));
+				
+//				Add Seva Details
+				
+				devoteeDetails.setSevaName(result.getString("Seva_Name"));
+				devoteeDetails.setSevaDetails(result.getString("Seva_Details"));
+				devoteeDetails.setSevaAmount(result.getInt("Seva_Amount"));
+				devoteeDetails.setIsSplSeva(result.getInt("Is_Spl_Seva"));
+				devoteeDetails.setNoOfPersonsAllowed(result.getInt("Persons_Allowed"));
+				devoteeDetails.setSevaPrasadametails(result.getString("Seva_Prasadam_Details"));
+				devoteeDetails.setLastModdifieddate(result.getDate("Last_modified_date"));
+				devoteeDetails.setLastModifiedBy(result.getString("Last_modifiedBy"));
+				devoteeDetails.setModificationReason(result.getString("Modified_Reason"));
+				devoteeDetails.setIsSevaActive(result.getInt("Is_seva_active"));
+				devoteeDetails.setSuggestions(result.getString("suggestions"));
+							
+				System.out.println("Added seva details bean to vector list: " + devoteeDetails.toString());
+				sevaList.add(devoteeDetails);
+				System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
+			}
+			connection.close();
+			return sevaList;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public DevoteeSevaBean getDevoteeSevaDetails(int id) {
+		try {
+			connection = DAO.getConnection();
+			sql = "SELECT * FROM temple.Devotee_Seva_Details, temple.devotee_master, temple.seva_master " +
+			"where temple.Devotee_Seva_Details.Seva_Id =  temple.seva_master.Seva_ID and" +
+			"temple.Devotee_Seva_Details.Devotee_Id = temple.devotee_master.devotee_id and" +
+			"Devotee_Seva_Details_Id=" + id;
+	
+			System.out.println("SQL: " + sql);
+			pstmt = connection.prepareStatement( sql );
+			result = pstmt.executeQuery();
+//			Vector<DevoteeSevaDetailsBean> sevaList = new Vector<DevoteeSevaDetailsBean>();
+			//Convert from result set to Bean classes
+			DevoteeSevaBean devoteeDetails = new DevoteeSevaBean();;
+//			while(result.next()) {
+//			Set Devotee Seva Details
+			devoteeDetails.setDevotee_Seva_Details_Id(result.getInt("Devotee_Seva_Details_Id"));
+			devoteeDetails.setSevaId(result.getInt("Seva_Id"));
+			devoteeDetails.setDevotee_Id(result.getInt("Devotee_Id"));
+			devoteeDetails.setDevotee_Seva_Date(result.getDate("Devotee_Seva_Date"));
+			devoteeDetails.setDevotee_Seva_Onbehalf(result.getString("Devotee_Seva_Onbehalf"));
+			devoteeDetails.setDevotee_Name(result.getString("Devotee_Name"));
+			devoteeDetails.setDevotee_Gotra(result.getString("Devotee_Gotra"));
+			devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Nakshatra"));
+			devoteeDetails.setAdvance_Amount(result.getInt("Advance_Amount"));
+			devoteeDetails.setAmount_Due(result.getInt("Amount_Due"));
+//			Set Devotee Details
+			devoteeDetails.setDevotee_Id(result.getInt("Devotee_Id"));
+			devoteeDetails.setDevotee_Surname(result.getString("Devotee_Surname"));
+			devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Name"));
+			devoteeDetails.setDevotee_Address(result.getString("Devotee_Address"));
+			devoteeDetails.setDevotee_City(result.getString("Devotee_City"));
+			devoteeDetails.setDevotee_Phone(result.getString("Devotee_Phone"));
+			devoteeDetails.setDevotee_Email(result.getString("Devotee_Email"));
+			devoteeDetails.setDevotee_Gotra(result.getString("Devotee_Gotra"));
+			devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Nakshatra"));
+			devoteeDetails.setDevotee_IsCommitteeMember(result.getString("Devotee_IsCommitteeMember"));
+			devoteeDetails.setDevotee_IsLifeMember(result.getString("Devotee_IsLifeMember"));
+			devoteeDetails.setDevotee_IsContributedInBuildingFund(result.getString("Devotee_IsContributedInBuildingFund"));
+			devoteeDetails.setDevotee_Alternate_ContactNumber(result.getString("Devotee_Alternate_ContactNumber"));
+			
+//			Add Seva Details
+			
+			devoteeDetails.setSevaName(result.getString("Seva_Name"));
+			devoteeDetails.setSevaDetails(result.getString("Seva_Details"));
+			devoteeDetails.setSevaAmount(result.getInt("Seva_Amount"));
+			devoteeDetails.setIsSplSeva(result.getInt("Is_Spl_Seva"));
+			devoteeDetails.setNoOfPersonsAllowed(result.getInt("Persons_Allowed"));
+			devoteeDetails.setSevaPrasadametails(result.getString("Seva_Prasadam_Details"));
+			devoteeDetails.setLastModdifieddate(result.getDate("Last_modified_date"));
+			devoteeDetails.setLastModifiedBy(result.getString("Last_modifiedBy"));
+			devoteeDetails.setModificationReason(result.getString("Modified_Reason"));
+			devoteeDetails.setIsSevaActive(result.getInt("Is_seva_active"));
+			devoteeDetails.setSuggestions(result.getString("suggestions"));
+				System.out.println("Added seva bean to vector list: " + devoteeDetails.toString());
+//				sevaList.add(devoteeDetails);
+				System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
+//			}
+			connection.close();
+			return devoteeDetails;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+//	public Vector<DevoteeSevaDetailsBean> getDevoteeSevaDetails(String query) {
 //		try {
 //			connection = DAO.getConnection();
-//			sql = "UPDATE `temple`.`devotee_master` SET" + 
-//			"`Devotee_Surname` = '" + devotee.getDevotee_Surname() + "', `Devotee_Name`=" + "'" + devotee.getDevotee_Name() + "',`Devotee_Address`='" + devotee.getDevotee_Address() + "', `Devotee_City` = '" + devotee.getDevotee_City() + "',`Devotee_Phone` = '" +devotee.getDevotee_Phone() +"'," +
-//			"`Devotee_Email` = '" +	devotee.getDevotee_Email() + "', `Devotee_Gotra`='"  + devotee.getDevotee_Gotra() +"', `Devotee_Nakshatra`='" + devotee.getDevotee_Nakshatra() + "', `Devotee_IsCommitteeMember` = '" + devotee.getDevotee_IsCommitteeMember() + "', " +
-//			"`Devotee_IsLifeMember`='" +devotee.getDevotee_IsLifeMember() + "',`Devotee_IsContributedInBuildingFund`='"  + devotee.getDevotee_IsContributedInBuildingFund()+"', `Devotee_Alternate_ContactNumber`='" + devotee.getDevotee_Alternate_ContactNumber() + "' WHERE `Devotee_Id` = " + devotee.getDevotee_Id(); 
-//			
-//			System.out.println("SQL: " + sql);
-//			pstmt = connection.prepareStatement( sql );
-//			pstmt.executeUpdate();
-//			connection.close();
-//			return 1;
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return -1;
-//		}
-//	}
-//	
-//	public Vector<DevoteeSevaDetailsBean> getDevoteeMaster() {
-//		try {
-//			connection = DAO.getConnection();
-//			sql = "SELECT * FROM DEVOTEE";
+//			sql = "SELECT * FROM Devotee_Seva_Details_Id WHERE ";
 //			
 //			System.out.println("SQL: " + sql);
 //			pstmt = connection.prepareStatement( sql );
 //			result = pstmt.executeQuery();
-//			Vector<DevoteeBean> sevaList = new Vector<DevoteeBean>();
+//			Vector<DevoteeSevaDetailsBean> sevaList = new Vector<DevoteeSevaDetailsBean>();
 //			//Convert from result set to Bean classes
-//			DevoteeBean devoteeDetails = null;
+//			DevoteeSevaDetailsBean devoteeDetails = null;
 //			while(result.next()) {
-//				devoteeDetails = new DevoteeBean();
+//				devoteeDetails = new DevoteeSevaDetailsBean();
+//				devoteeDetails.setDevotee_Seva_Details_Id(result.getInt("Devotee_Seva_Details_Id"));
+//				devoteeDetails.setSeva_Id(result.getInt("Seva_Id"));
 //				devoteeDetails.setDevotee_Id(result.getInt("Devotee_Id"));
-//				devoteeDetails.setDevotee_Surname(result.getString("Devotee_Surname"));
-//				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Name"));
-//				devoteeDetails.setDevotee_Address(result.getString("Devotee_Address"));
-//				devoteeDetails.setDevotee_City(result.getString("Devotee_City"));
-//				devoteeDetails.setDevotee_Phone(result.getString("Devotee_Phone"));
-//				devoteeDetails.setDevotee_Email(result.getString("Devotee_Email"));
+//				devoteeDetails.setDevotee_Seva_Date(result.getDate("Devotee_Seva_Date"));
+//				devoteeDetails.setDevotee_Seva_Onbehalf(result.getString("Devotee_Seva_Onbehalf"));
+//				devoteeDetails.setDevotee_Name(result.getString("Devotee_Name"));
 //				devoteeDetails.setDevotee_Gotra(result.getString("Devotee_Gotra"));
 //				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Nakshatra"));
-//				devoteeDetails.setDevotee_IsCommitteeMember(result.getString("Devotee_IsCommitteeMember"));
-//				devoteeDetails.setDevotee_IsLifeMember(result.getString("Devotee_IsLifeMember"));
-//				devoteeDetails.setDevotee_IsContributedInBuildingFund(result.getString("Devotee_IsContributedInBuildingFund"));
-//				devoteeDetails.setDevotee_Alternate_ContactNumber(result.getString("Devotee_Alternate_ContactNumber"));
+//				devoteeDetails.setAdvance_Amount(result.getInt("Advance_Amount"));
+//				devoteeDetails.setAmount_Due(result.getInt("Amount_Due"));
 //				System.out.println("Added seva bean to vector list: " + devoteeDetails.toString());
 //				sevaList.add(devoteeDetails);
 //				System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
@@ -100,94 +233,17 @@ public class DevoteeSevaDetails {
 //		}
 //	}
 //	
-//	public DevoteeSevaDetails getDevoteeMaster(int devoteeID) {
-//		try {
-//			connection = DAO.getConnection();
-//			sql = "SELECT * FROM DEVOTEE WHERE Devotee_Id = " + devoteeID;
-//			
-//			System.out.println("SQL: " + sql);
-//			pstmt = connection.prepareStatement( sql );
-//			result = pstmt.executeQuery();
-////			Vector<DevoteeBean> sevaList = new Vector<DevoteeBean>();
-//			//Convert from result set to Bean classes
-//			DevoteeBean devoteeDetails = null;
-////			while(result.next()) {
-//				devoteeDetails = new DevoteeBean();
-//				devoteeDetails.setDevotee_Id(result.getInt("Devotee_Id"));
-//				devoteeDetails.setDevotee_Surname(result.getString("Devotee_Surname"));
-//				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Name"));
-//				devoteeDetails.setDevotee_Address(result.getString("Devotee_Address"));
-//				devoteeDetails.setDevotee_City(result.getString("Devotee_City"));
-//				devoteeDetails.setDevotee_Phone(result.getString("Devotee_Phone"));
-//				devoteeDetails.setDevotee_Email(result.getString("Devotee_Email"));
-//				devoteeDetails.setDevotee_Gotra(result.getString("Devotee_Gotra"));
-//				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Nakshatra"));
-//				devoteeDetails.setDevotee_IsCommitteeMember(result.getString("Devotee_IsCommitteeMember"));
-//				devoteeDetails.setDevotee_IsLifeMember(result.getString("Devotee_IsLifeMember"));
-//				devoteeDetails.setDevotee_IsContributedInBuildingFund(result.getString("Devotee_IsContributedInBuildingFund"));
-//				devoteeDetails.setDevotee_Alternate_ContactNumber(result.getString("Devotee_Alternate_ContactNumber"));
-//				System.out.println("Added seva bean to vector list: " + devoteeDetails.toString());
-////				sevaList.add(devoteeDetails);
-//				System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
-////			}
-//				connection.close();
-//				return devoteeDetails;
-//			
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-//	
-//	public DevoteeSevaDetails getDevoteeMaster(String search) {
-//		try {
-//			connection = DAO.getConnection();
-//			sql = "SELECT * FROM DEVOTEE WHERE Devotee_Id = " + devoteeID;
-//			
-//			System.out.println("SQL: " + sql);
-//			pstmt = connection.prepareStatement( sql );
-//			result = pstmt.executeQuery();
-////			Vector<DevoteeBean> sevaList = new Vector<DevoteeBean>();
-//			//Convert from result set to Bean classes
-//			DevoteeBean devoteeDetails = null;
-////			while(result.next()) {
-//				devoteeDetails = new DevoteeBean();
-//				devoteeDetails.setDevotee_Id(result.getInt("Devotee_Id"));
-//				devoteeDetails.setDevotee_Surname(result.getString("Devotee_Surname"));
-//				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Name"));
-//				devoteeDetails.setDevotee_Address(result.getString("Devotee_Address"));
-//				devoteeDetails.setDevotee_City(result.getString("Devotee_City"));
-//				devoteeDetails.setDevotee_Phone(result.getString("Devotee_Phone"));
-//				devoteeDetails.setDevotee_Email(result.getString("Devotee_Email"));
-//				devoteeDetails.setDevotee_Gotra(result.getString("Devotee_Gotra"));
-//				devoteeDetails.setDevotee_Nakshatra(result.getString("Devotee_Nakshatra"));
-//				devoteeDetails.setDevotee_IsCommitteeMember(result.getString("Devotee_IsCommitteeMember"));
-//				devoteeDetails.setDevotee_IsLifeMember(result.getString("Devotee_IsLifeMember"));
-//				devoteeDetails.setDevotee_IsContributedInBuildingFund(result.getString("Devotee_IsContributedInBuildingFund"));
-//				devoteeDetails.setDevotee_Alternate_ContactNumber(result.getString("Devotee_Alternate_ContactNumber"));
-//				System.out.println("Added seva bean to vector list: " + devoteeDetails.toString());
-////				sevaList.add(devoteeDetails);
-//				System.out.println("Fetched seva master id:" + result.getInt("Seva_ID"));
-////			}
-//				connection.close();
-//				return devoteeDetails;
-//			
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-	
-	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DevoteeSevaDetails dsd = new DevoteeSevaDetails();
-		DevoteeSevaDetailsBean dsb = new DevoteeSevaDetailsBean(2,3,new Date(System.currentTimeMillis()))
+//		DevoteeSevaDetailsBean dsb = new DevoteeSevaDetailsBean(2,3,new Date(System.currentTimeMillis()), "NO");
+		DevoteeSevaDetailsBean dsb = new DevoteeSevaDetailsBean(2,3,new Date(System.currentTimeMillis()), "YES","Sumadhwa Vijay", "Saunaka", "Swathi", 500,100);
+		dsb.setDevotee_Seva_Details_Id(3);
+//		dsd.addNewDevoteeSeva(dsb);
+		dsd.updateDevoteeSeva(dsb);
 
 	}
 
